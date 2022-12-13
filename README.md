@@ -108,14 +108,14 @@ GET /ptlist?period=1w&tz=Europe/Athens&t1=20180214T204603Z&t2=20211115T123456Z
 }
 ```
 
-#### Run without Docker:
+### Run without Docker:
 In the root directory of the project, type the following to fire up the server:
 ```
 chmod +x run.sh && ./run.sh 
 ```
  (don't forget to add port to listen to, for example : `./run.sh 8080`)
 
-#### Run with Docker:
+### Run with Docker:
 In the root directory of the project (where the dockerfile exists):
 ```
 docker build --tag docker-inaccess .
@@ -134,4 +134,9 @@ It's handy to remember that in the -p 8080:8080 command line option, the order f
 In case you want to delete the image:
 ```
 docker image rm -f docker-inaccess
+```
+### Unit-Testing
+To check the test coverage of the project run:
+```
+make coverage
 ```
