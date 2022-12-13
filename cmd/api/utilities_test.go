@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"testing"
 	"time"
 )
@@ -83,6 +84,38 @@ func TestCheckInvocationSequence(t *testing.T) {
 
 		if result != e.expected {
 			t.Errorf("Expected %v but got %v", e.expected, result)
+		}
+	}
+}
+
+func TestParseStringToTime(t *testing.T) {
+	testCases := []struct {
+		name            string
+		layout          string
+		invocationPoint string
+		expected        string
+		err             *ApplicationError
+	}{
+		{"first correct", "20060102T150405Z", "20210714T204603Z", "2021-07-14 20:46:03 +0000 UTC", nil},
+		{"second correct", "20060102T150405Z", "20210715T123456Z", "2021-07-15 12:34:56 +0000 UTC", nil},
+		{"differenct layout", time.Layout, "20210715T123456Z", "", &ApplicationError{
+			Message:    "cannot parse invocation points",
+			StatusCode: http.StatusBadRequest,
+			Code:       "bad_request",
+		}},
+	}
+
+	for _, e := range testCases {
+		result, err := ParseStringToTime(e.layout, e.invocationPoint)
+		if err != nil {
+			if err.Message != "cannot parse invocation points" {
+				t.Error("Expected error, but got none")
+			}
+			return
+		}
+
+		if result.String() != e.expected {
+			t.Errorf("%s: Expected %s but got %s", e.name, e.expected, result.String())
 		}
 	}
 }

@@ -67,7 +67,6 @@ func ParseStringToTime(layout, invocationPoint string) (*time.Time, *Application
 	}
 
 	return &t1, nil
-
 }
 
 const UTC_FORM = "20060102T150405Z"
