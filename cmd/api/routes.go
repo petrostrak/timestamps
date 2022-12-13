@@ -2,17 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
-
-var (
-	mux *http.ServeMux
-)
-
-func init() {
-	mux = http.NewServeMux()
-}
 
 func parsePort() string {
 
@@ -26,10 +19,17 @@ func parsePort() string {
 	return ":" + port
 }
 
-func startApp() {
+func routes() http.Handler {
+	mux := http.NewServeMux()
+
 	mux.HandleFunc("/ptlist", GetAllTimestamps)
 
-	if err := http.ListenAndServe(parsePort(), mux); err != nil {
-		panic(err)
+	return mux
+}
+
+func startApp() {
+	err := http.ListenAndServe(parsePort(), routes())
+	if err != nil {
+		log.Fatal(err)
 	}
 }
