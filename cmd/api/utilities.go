@@ -7,11 +7,15 @@ import (
 	"time"
 )
 
+var (
+	TIMESTAMP_REGEX = regexp.MustCompile(`^[1-9]\d{3}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$`)
+)
+
 // /ptlist?period=1h&tz=Europe/Athens&t1=20210714T204603Z&t2=20210715T123456Z
 // isValidPeriod is helper function to parse period and translate it into time.Duration
 // Valid periods should be 1h, 1d, 1mo, 1y
 func isValidPeriod(p string) bool {
-	return p != "1h" || p != "1d" || p != "1mo" || p != "1y"
+	return p == "1h" || p == "1d" || p == "1mo" || p == "1y"
 }
 
 // helper function to check timezone
@@ -32,8 +36,8 @@ func parseTimezone(tz string) (string, *ApplicationError) {
 // of a regular expression
 // ^[1-9]\d{3}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
 func CheckInvocationPoints(t1, t2 string) bool {
-	return regexp.MustCompile(`^[1-9]\d{3}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$`).MatchString(t1) &&
-		regexp.MustCompile(`^[1-9]\d{3}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$`).MatchString(t2)
+	return TIMESTAMP_REGEX.MatchString(t1) &&
+		TIMESTAMP_REGEX.MatchString(t2)
 }
 
 // CheckInvocationSequence checks if invocation points are in the correct time sequence
