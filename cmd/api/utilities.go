@@ -103,9 +103,7 @@ func calculateTimestamps(t1, t2 string, period string) ([]string, *ApplicationEr
 
 func GetTimestamps(ip1, ip2 *time.Time, period string) ([]string, *ApplicationError) {
 	timestamps := []string{}
-	year, month, day := ip1.Date()
-	timestamp := time.Date(year, month, day, ip1.Hour()+1, 0, 0, 0, time.UTC)
-	fmt.Println(timestamp)
+	timestamp := ip1.Round(time.Hour)
 
 	switch period {
 	case "1h":
