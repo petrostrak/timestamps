@@ -1,2 +1,2 @@
 #!/bin/bash
-go run cmd/api/*.go $1
+go run ./cmd/api $1
