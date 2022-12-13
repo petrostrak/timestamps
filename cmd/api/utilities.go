@@ -103,29 +103,16 @@ func calculateTimestamps(t1, t2 string, period string) ([]string, *ApplicationEr
 
 func GetTimestamps(ip1, ip2 *time.Time, period string) ([]string, *ApplicationError) {
 	timestamps := []string{}
-	timestamp := ip1.Round(time.Hour)
 
 	switch period {
 	case "1h":
-		for timestamp.Before(*ip2) {
-			timestamps = append(timestamps, timestamp.Format(UTC_FORM))
-			timestamp = timestamp.Add(time.Hour)
-		}
+		timestamps = getHourlyTimestamps(ip1, ip2, timestamps)
 	case "1d":
-		for timestamp.Before(*ip2) {
-			timestamps = append(timestamps, timestamp.Format(UTC_FORM))
-			timestamp = timestamp.AddDate(0, 0, 1)
-		}
+		timestamps = getDailyTimestamps(ip1, ip2, timestamps)
 	case "1mo":
-		for timestamp.Before(*ip2) {
-			timestamps = append(timestamps, timestamp.Format(UTC_FORM))
-			timestamp = timestamp.AddDate(0, 1, 0)
-		}
+		timestamps = getMonthlyTimestamps(ip1, ip2, timestamps)
 	case "1y":
-		for timestamp.Before(*ip2) {
-			timestamps = append(timestamps, timestamp.Format(UTC_FORM))
-			timestamp = timestamp.AddDate(1, 0, 0)
-		}
+		timestamps = getAnnuallyTimestamps(ip1, ip2, timestamps)
 	default:
 		return nil, &ApplicationError{
 			Message:    "could not parse period",
@@ -135,4 +122,40 @@ func GetTimestamps(ip1, ip2 *time.Time, period string) ([]string, *ApplicationEr
 	}
 
 	return timestamps, nil
+}
+
+func getAnnuallyTimestamps(ip1 *time.Time, ip2 *time.Time, timestamps []string) []string {
+	timestamp := ip1.Round(time.Hour)
+	for timestamp.Before(*ip2) {
+		timestamps = append(timestamps, timestamp.Format(UTC_FORM))
+		timestamp = timestamp.AddDate(1, 0, 0)
+	}
+	return timestamps
+}
+
+func getMonthlyTimestamps(ip1 *time.Time, ip2 *time.Time, timestamps []string) []string {
+	timestamp := ip1.Round(time.Hour)
+	for timestamp.Before(*ip2) {
+		timestamps = append(timestamps, timestamp.Format(UTC_FORM))
+		timestamp = timestamp.AddDate(0, 1, 0)
+	}
+	return timestamps
+}
+
+func getDailyTimestamps(ip1 *time.Time, ip2 *time.Time, timestamps []string) []string {
+	timestamp := ip1.Round(time.Hour)
+	for timestamp.Before(*ip2) {
+		timestamps = append(timestamps, timestamp.Format(UTC_FORM))
+		timestamp = timestamp.AddDate(0, 0, 1)
+	}
+	return timestamps
+}
+
+func getHourlyTimestamps(ip1 *time.Time, ip2 *time.Time, timestamps []string) []string {
+	timestamp := ip1.Round(time.Hour)
+	for timestamp.Before(*ip2) {
+		timestamps = append(timestamps, timestamp.Format(UTC_FORM))
+		timestamp = timestamp.Add(time.Hour)
+	}
+	return timestamps
 }
