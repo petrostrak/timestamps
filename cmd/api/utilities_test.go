@@ -2,6 +2,7 @@ package main
 
 import (
 	"testing"
+	"time"
 )
 
 func TestIsValidPeriod(t *testing.T) {
@@ -58,6 +59,27 @@ func TestCheckInvocationPoints(t *testing.T) {
 
 	for _, e := range testCases {
 		result := CheckInvocationPoints(e.invocation_p1, e.invocation_p2)
+
+		if result != e.expected {
+			t.Errorf("Expected %v but got %v", e.expected, result)
+		}
+	}
+}
+
+func TestCheckInvocationSequence(t *testing.T) {
+	testCases := []struct {
+		name          string
+		invocation_p1 string
+		invocation_p2 string
+		layout        string
+		expected      bool
+	}{
+		{"correct", "20210714T204603Z", "20210715T123456Z", "20060102T150405Z", true},
+		{"wrong", "20210714T204603Z", "20210715T123456Z", time.RFC3339, false},
+	}
+
+	for _, e := range testCases {
+		result := CheckInvocationSequence(e.invocation_p1, e.invocation_p2, e.layout)
 
 		if result != e.expected {
 			t.Errorf("Expected %v but got %v", e.expected, result)
