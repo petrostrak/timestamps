@@ -1,6 +1,8 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestIsValidPeriod(t *testing.T) {
 	testCases := []struct {
@@ -20,6 +22,25 @@ func TestIsValidPeriod(t *testing.T) {
 
 		if actual != e.expected {
 			t.Errorf("Expected %v but got %v", e.expected, actual)
+		}
+	}
+}
+
+func TestParseTimeZone(t *testing.T) {
+	testCases := []struct {
+		name     string
+		timezone string
+		expected string
+	}{
+		{"correct", "Europe/Athens", "Europe/Athens"},
+		{"false", "Eu/Ath", ""},
+	}
+
+	for _, e := range testCases {
+		actual, _ := parseTimezone(e.timezone)
+
+		if actual != e.expected {
+			t.Errorf("Expected %s but got %s", e.expected, actual)
 		}
 	}
 }
