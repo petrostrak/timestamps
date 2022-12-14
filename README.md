@@ -103,8 +103,12 @@ An example of unsuccessful request/response:
 ```
 GET /ptlist?period=1w&tz=Europe/Athens&t1=20180214T204603Z&t2=20211115T123456Z
 {
-"status": "error",
-"desc": "Unsupported period"
+    "Status":400,
+    "Body":{
+        "status":400,
+        "code":"bad_request",
+        "desc":"could not parse period"
+    }
 }
 ```
 
@@ -135,7 +139,7 @@ In case you want to delete the image:
 ```
 docker image rm -f docker-inaccess
 ```
-### Unit-Testing
+### Unit- Test
 To check the test coverage of the project run:
 ```
 make coverage

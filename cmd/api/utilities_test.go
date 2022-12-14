@@ -99,7 +99,7 @@ func TestParseStringToTime(t *testing.T) {
 	}{
 		{"first correct", "20060102T150405Z", "20210714T204603Z", "2021-07-14 20:46:03 +0000 UTC", nil},
 		{"second correct", "20060102T150405Z", "20210715T123456Z", "2021-07-15 12:34:56 +0000 UTC", nil},
-		{"differenct layout", time.Layout, "20210715T123456Z", "", &ApplicationError{
+		{"different layout", time.Layout, "20210715T123456Z", "", &ApplicationError{
 			Message:    "cannot parse invocation points",
 			StatusCode: http.StatusBadRequest,
 			Code:       "bad_request",
