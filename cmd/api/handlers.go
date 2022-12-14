@@ -69,6 +69,7 @@ type respond struct {
 // Respond is the function that returns a successful JSON
 func Respond(w http.ResponseWriter, status int, body any) {
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
 
 	resp := &respond{
 		Status: status,
@@ -91,6 +92,7 @@ type ApplicationError struct {
 // RespondError is the function that returns an ApplicationError
 func RespondError(w http.ResponseWriter, err *ApplicationError) {
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(err.StatusCode)
 
 	resp := &respond{
 		Status: err.StatusCode,
