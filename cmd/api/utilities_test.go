@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -118,4 +119,30 @@ func TestParseStringToTime(t *testing.T) {
 			t.Errorf("%s: Expected %s but got %s", e.name, e.expected, result.String())
 		}
 	}
+}
+
+func TestGetHourlyTimestamps(t *testing.T) {
+	testCases := []struct {
+		name          string
+		layout        string
+		invocation_p1 string
+		invocation_p2 string
+		timestamps    []string
+		expected      []string
+	}{
+		{"correct", "20060102T150405Z", "20210714T204603Z", "20210715T123456Z", []string{}, []string{"20210714T210000Z", "20210714T220000Z", "20210714T230000Z", "20210715T000000Z", "20210715T010000Z", "20210715T020000Z", "20210715T030000Z", "20210715T040000Z", "20210715T050000Z", "20210715T060000Z", "20210715T070000Z", "20210715T080000Z", "20210715T090000Z", "20210715T100000Z", "20210715T110000Z", "20210715T120000Z"}},
+		{"wrong invocation points", "20060102T150405Z", "20210715T123456Z", "20210714T204603Z", []string{}, []string{}},
+	}
+
+	for _, e := range testCases {
+		ip1, _ := ParseStringToTime(e.layout, e.invocation_p1)
+		ip2, _ := ParseStringToTime(e.layout, e.invocation_p2)
+
+		result := getHourlyTimestamps(ip1, ip2, e.timestamps)
+
+		if !reflect.DeepEqual(result, e.expected) {
+			t.Errorf("%s: Expected %v but got %v", e.name, e.expected, result)
+		}
+	}
+
 }
