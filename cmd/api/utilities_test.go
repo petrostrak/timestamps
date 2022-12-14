@@ -146,3 +146,28 @@ func TestGetHourlyTimestamps(t *testing.T) {
 	}
 
 }
+
+func TestGetDailyTimestamps(t *testing.T) {
+	testCases := []struct {
+		name          string
+		layout        string
+		invocation_p1 string
+		invocation_p2 string
+		timestamps    []string
+		expected      []string
+	}{
+		{"correct", "20060102T150405Z", "20211010T204603Z", "20211115T123456Z", []string{}, []string{"20211010T210000Z", "20211011T210000Z", "20211012T210000Z", "20211013T210000Z", "20211014T210000Z", "20211015T210000Z", "20211016T210000Z", "20211017T210000Z", "20211018T210000Z", "20211019T210000Z", "20211020T210000Z", "20211021T210000Z", "20211022T210000Z", "20211023T210000Z", "20211024T210000Z", "20211025T210000Z", "20211026T210000Z", "20211027T210000Z", "20211028T210000Z", "20211029T210000Z", "20211030T210000Z", "20211031T210000Z", "20211101T210000Z", "20211102T210000Z", "20211103T210000Z", "20211104T210000Z", "20211105T210000Z", "20211106T210000Z", "20211107T210000Z", "20211108T210000Z", "20211109T210000Z", "20211110T210000Z", "20211111T210000Z", "20211112T210000Z", "20211113T210000Z", "20211114T210000Z"}},
+		{"wrong invocation points", "20060102T150405Z", "20211115T123456Z", "20211010T204603Z", []string{}, []string{}},
+	}
+
+	for _, e := range testCases {
+		ip1, _ := ParseStringToTime(e.layout, e.invocation_p1)
+		ip2, _ := ParseStringToTime(e.layout, e.invocation_p2)
+
+		result := getDailyTimestamps(ip1, ip2, e.timestamps)
+
+		if !reflect.DeepEqual(result, e.expected) {
+			t.Errorf("%s: Expected %v but got %v", e.name, e.expected, result)
+		}
+	}
+}
