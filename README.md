@@ -139,7 +139,7 @@ In case you want to delete the image:
 ```
 docker image rm -f docker-inaccess
 ```
-### Unit- Test
+### Unit-Test
 To check the test coverage of the project run:
 ```
 make coverage
