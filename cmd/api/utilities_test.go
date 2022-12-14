@@ -196,3 +196,28 @@ func TestGetMonthlyTimestamps(t *testing.T) {
 		}
 	}
 }
+
+func TestGetAnnuallyTimestamps(t *testing.T) {
+	testCases := []struct {
+		name          string
+		layout        string
+		invocation_p1 string
+		invocation_p2 string
+		timestamps    []string
+		expected      []string
+	}{
+		{"correct", "20060102T150405Z", "20180214T204603Z", "20211115T123456Z", []string{}, []string{"20180214T210000Z", "20190214T210000Z", "20200214T210000Z", "20210214T210000Z"}},
+		{"wrong invocation points", "20060102T150405Z", "20211115T123456Z", "20180214T204603Z", []string{}, []string{}},
+	}
+
+	for _, e := range testCases {
+		ip1, _ := ParseStringToTime(e.layout, e.invocation_p1)
+		ip2, _ := ParseStringToTime(e.layout, e.invocation_p2)
+
+		result := getAnnuallyTimestamps(ip1, ip2, e.timestamps)
+
+		if !reflect.DeepEqual(result, e.expected) {
+			t.Errorf("%s: Expected %v but got %v", e.name, e.expected, result)
+		}
+	}
+}
