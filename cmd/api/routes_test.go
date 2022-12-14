@@ -22,7 +22,7 @@ func TestParsePorts(t *testing.T) {
 
 	for _, e := range testCases {
 		os.Args = e.args
-		res := parsePort()
+		res, _ := parsePort()
 
 		if e.expected != res {
 			t.Errorf("Got %s but wanted %s", res, e.expected)

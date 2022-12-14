@@ -23,7 +23,7 @@ func parseTimezone(tz string) (string, *ApplicationError) {
 	timeZone, err := time.LoadLocation(tz)
 	if err != nil {
 		return "", &ApplicationError{
-			Message:    fmt.Sprintf("could not parse timezone : %s", timeZone),
+			Message:    "could not parse timezone",
 			StatusCode: http.StatusBadRequest,
 			Code:       "bad_request",
 		}
