@@ -19,7 +19,7 @@ type InvocationPoints struct {
 	T2 string `json:"t2"`
 }
 
-func GetAllTimestamps(w http.ResponseWriter, r *http.Request) {
+func getAllTimestamps(w http.ResponseWriter, r *http.Request) {
 	// read query parameteres
 	queryParams := r.URL.Query()
 

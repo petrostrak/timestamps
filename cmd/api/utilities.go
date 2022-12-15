@@ -32,13 +32,13 @@ func parseTimezone(tz string) (string, *ApplicationError) {
 }
 
 // CheckInvocationPoint checks if invocation points are in the correct format.
-func CheckInvocationPoints(t1, t2 string) bool {
+func checkInvocationPoints(t1, t2 string) bool {
 	return TIMESTAMP_REGEX.MatchString(t1) &&
 		TIMESTAMP_REGEX.MatchString(t2)
 }
 
-// CheckInvocationSequence checks if invocation points are in the correct sequence.
-func CheckInvocationSequence(t1, t2, layout string) bool {
+// checkInvocationSequence checks if invocation points are in the correct sequence.
+func checkInvocationSequence(t1, t2, layout string) bool {
 	ts1, err := time.Parse(layout, t1)
 	if err != nil {
 		fmt.Println(err)
@@ -52,8 +52,8 @@ func CheckInvocationSequence(t1, t2, layout string) bool {
 	return ts1.Before(ts2)
 }
 
-// ParseStringToTime receives a string and parses it to time.Time
-func ParseStringToTime(layout, invocationPoint string) (*time.Time, *ApplicationError) {
+// parseStringToTime receives a string and parses it to time.Time
+func parseStringToTime(layout, invocationPoint string) (*time.Time, *ApplicationError) {
 	t1, err := time.Parse(layout, invocationPoint)
 	if err != nil {
 		return nil, &ApplicationError{
@@ -72,17 +72,17 @@ const UTC_FORM = "20060102T150405Z"
 // parseInvocationPoints checks invocation points and calculates the timestamps, if any.
 func parseInvocationPoints(t1, t2 string, period string) ([]string, *ApplicationError) {
 
-	if CheckInvocationPoints(t1, t2) && CheckInvocationSequence(t1, t2, UTC_FORM) {
-		ip1, err := ParseStringToTime(UTC_FORM, t1)
+	if checkInvocationPoints(t1, t2) && checkInvocationSequence(t1, t2, UTC_FORM) {
+		ip1, err := parseStringToTime(UTC_FORM, t1)
 		if err != nil {
 			return nil, err
 		}
 
-		ip2, err := ParseStringToTime(UTC_FORM, t2)
+		ip2, err := parseStringToTime(UTC_FORM, t2)
 		if err != nil {
 			return nil, err
 		}
-		return GetTimestamps(ip1, ip2, period)
+		return getTimestamps(ip1, ip2, period)
 	} else {
 		return nil, &ApplicationError{
 			Message:    "cannot parse invocation points",
@@ -92,7 +92,7 @@ func parseInvocationPoints(t1, t2 string, period string) ([]string, *Application
 	}
 }
 
-func GetTimestamps(ip1, ip2 *time.Time, period string) ([]string, *ApplicationError) {
+func getTimestamps(ip1, ip2 *time.Time, period string) ([]string, *ApplicationError) {
 	timestamps := []string{}
 
 	switch period {
