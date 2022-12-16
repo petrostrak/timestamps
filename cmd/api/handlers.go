@@ -27,15 +27,6 @@ func GetAllTimestamps(w http.ResponseWriter, r *http.Request) {
 	timezone := queryParams.Get("tz")
 	t1, t2 := queryParams.Get("t1"), queryParams.Get("t2")
 
-	if !isValidPeriod(period) {
-		RespondError(w, &ApplicationError{
-			Message:    "could not parse period",
-			StatusCode: http.StatusBadRequest,
-			Code:       "bad_request",
-		})
-		return
-	}
-
 	tz, err := parseTimezone(timezone)
 	if err != nil {
 		RespondError(w, err)
