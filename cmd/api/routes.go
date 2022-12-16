@@ -21,7 +21,7 @@ func parsePort() (string, error) {
 func routes() http.Handler {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/ptlist", GetAllTimestamps)
+	mux.HandleFunc("/ptlist", getAllTimestamps)
 
 	return mux
 }

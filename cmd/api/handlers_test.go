@@ -14,10 +14,10 @@ func TestGetAllTimestamps(t *testing.T) {
 		handler            http.HandlerFunc
 		expectedStatusCode int
 	}{
-		{"get all timestamps", "GET", map[string]string{"period": "1h", "tz": "Europe/Athens", "t1": "20210714T204603Z", "t2": "20210715T123456Z"}, GetAllTimestamps, http.StatusOK},
-		{"get all timestamps - bad t1", "GET", map[string]string{"period": "1h", "tz": "Europe/Athens", "t1": "", "t2": "20210715T123456Z"}, GetAllTimestamps, http.StatusBadRequest},
-		{"get all timestamps - bad timezone", "GET", map[string]string{"period": "1h", "tz": "Eur/Athens", "t1": "20210714T204603Z", "t2": "20210715T123456Z"}, GetAllTimestamps, http.StatusBadRequest},
-		{"get all timestamps - bad period", "GET", map[string]string{"period": "1w", "tz": "Europe/Athens", "t1": "20210714T204603Z", "t2": "20210715T123456Z"}, GetAllTimestamps, http.StatusBadRequest},
+		{"get all timestamps", "GET", map[string]string{"period": "1h", "tz": "Europe/Athens", "t1": "20210714T204603Z", "t2": "20210715T123456Z"}, getAllTimestamps, http.StatusOK},
+		{"get all timestamps - bad t1", "GET", map[string]string{"period": "1h", "tz": "Europe/Athens", "t1": "", "t2": "20210715T123456Z"}, getAllTimestamps, http.StatusBadRequest},
+		{"get all timestamps - bad timezone", "GET", map[string]string{"period": "1h", "tz": "Eur/Athens", "t1": "20210714T204603Z", "t2": "20210715T123456Z"}, getAllTimestamps, http.StatusBadRequest},
+		{"get all timestamps - bad period", "GET", map[string]string{"period": "1w", "tz": "Europe/Athens", "t1": "20210714T204603Z", "t2": "20210715T123456Z"}, getAllTimestamps, http.StatusBadRequest},
 	}
 
 	for _, e := range testCases {
