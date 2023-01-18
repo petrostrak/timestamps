@@ -54,8 +54,8 @@ func checkInvocationSequence(t1, t2, layout string) bool {
 }
 
 // parseStringToTime receives a string and parses it to time.Time
-func parseStringToTime(layout, invocationPoint string) (*time.Time, *ApplicationError) {
-	t1, err := time.Parse(layout, invocationPoint)
+func parseStringToTime(invocationPoint string) (*time.Time, *ApplicationError) {
+	t1, err := time.Parse(UTC_FORM, invocationPoint)
 	if err != nil {
 		return nil, &ApplicationError{
 			Message:    "cannot parse invocation points",
@@ -74,12 +74,12 @@ const UTC_FORM = "20060102T150405Z"
 func parseInvocationPoints(t1, t2 string, period string) ([]string, *ApplicationError) {
 
 	if checkInvocationPoints(t1, t2) && checkInvocationSequence(t1, t2, UTC_FORM) {
-		ip1, err := parseStringToTime(UTC_FORM, t1)
+		ip1, err := parseStringToTime(t1)
 		if err != nil {
 			return nil, err
 		}
 
-		ip2, err := parseStringToTime(UTC_FORM, t2)
+		ip2, err := parseStringToTime(t2)
 		if err != nil {
 			return nil, err
 		}
