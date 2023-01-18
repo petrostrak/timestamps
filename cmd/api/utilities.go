@@ -132,7 +132,7 @@ func getAnnuallyTimestamps(ip1, ip2 *time.Time, n int) []string {
 	return timestamps
 }
 
-func getMonthlyTimestamps(ip1 *time.Time, ip2 *time.Time, n int) []string {
+func getMonthlyTimestamps(ip1, ip2 *time.Time, n int) []string {
 	timestamps := []string{}
 	timestamp := ip1.Round(time.Hour)
 	for timestamp.Before(*ip2) {
@@ -142,7 +142,7 @@ func getMonthlyTimestamps(ip1 *time.Time, ip2 *time.Time, n int) []string {
 	return timestamps
 }
 
-func getDailyTimestamps(ip1 *time.Time, ip2 *time.Time, n int) []string {
+func getDailyTimestamps(ip1, ip2 *time.Time, n int) []string {
 	timestamps := []string{}
 	timestamp := ip1.Round(time.Hour)
 	for timestamp.Before(*ip2) {
@@ -152,7 +152,7 @@ func getDailyTimestamps(ip1 *time.Time, ip2 *time.Time, n int) []string {
 	return timestamps
 }
 
-func getHourlyTimestamps(ip1 *time.Time, ip2 *time.Time, n int) []string {
+func getHourlyTimestamps(ip1, ip2 *time.Time, n int) []string {
 	timestamps := []string{}
 	timestamp := ip1.Round(time.Hour)
 	for timestamp.Before(*ip2) {
