@@ -1,7 +1,6 @@
 package main
 
 import (
-	"net/http"
 	"reflect"
 	"testing"
 	"time"
@@ -92,22 +91,16 @@ func TestCheckInvocationSequence(t *testing.T) {
 func TestParseStringToTime(t *testing.T) {
 	testCases := []struct {
 		name            string
-		layout          string
 		invocationPoint string
 		expected        string
 		err             *ApplicationError
 	}{
-		{"first correct", "20060102T150405Z", "20210714T204603Z", "2021-07-14 20:46:03 +0000 UTC", nil},
-		{"second correct", "20060102T150405Z", "20210715T123456Z", "2021-07-15 12:34:56 +0000 UTC", nil},
-		{"different layout", time.Layout, "20210715T123456Z", "", &ApplicationError{
-			Message:    "cannot parse invocation points",
-			StatusCode: http.StatusBadRequest,
-			Code:       "bad_request",
-		}},
+		{"first correct", "20210714T204603Z", "2021-07-14 20:46:03 +0000 UTC", nil},
+		{"second correct", "20210715T123456Z", "2021-07-15 12:34:56 +0000 UTC", nil},
 	}
 
 	for _, e := range testCases {
-		result, err := parseStringToTime(e.layout, e.invocationPoint)
+		result, err := parseStringToTime(e.invocationPoint)
 		if err != nil {
 			if err.Message != "cannot parse invocation points" {
 				t.Error("Expected error, but got none")
@@ -136,8 +129,8 @@ func TestGetHourlyTimestamps(t *testing.T) {
 	}
 
 	for _, e := range testCases {
-		ip1, _ := parseStringToTime(e.layout, e.invocation_p1)
-		ip2, _ := parseStringToTime(e.layout, e.invocation_p2)
+		ip1, _ := parseStringToTime(e.invocation_p1)
+		ip2, _ := parseStringToTime(e.invocation_p2)
 
 		result := getHourlyTimestamps(ip1, ip2, e.frequency)
 
@@ -163,8 +156,8 @@ func TestGetDailyTimestamps(t *testing.T) {
 	}
 
 	for _, e := range testCases {
-		ip1, _ := parseStringToTime(e.layout, e.invocation_p1)
-		ip2, _ := parseStringToTime(e.layout, e.invocation_p2)
+		ip1, _ := parseStringToTime(e.invocation_p1)
+		ip2, _ := parseStringToTime(e.invocation_p2)
 
 		result := getDailyTimestamps(ip1, ip2, e.frequency)
 
@@ -189,8 +182,8 @@ func TestGetMonthlyTimestamps(t *testing.T) {
 	}
 
 	for _, e := range testCases {
-		ip1, _ := parseStringToTime(e.layout, e.invocation_p1)
-		ip2, _ := parseStringToTime(e.layout, e.invocation_p2)
+		ip1, _ := parseStringToTime(e.invocation_p1)
+		ip2, _ := parseStringToTime(e.invocation_p2)
 
 		result := getMonthlyTimestamps(ip1, ip2, e.frequency)
 
@@ -215,8 +208,8 @@ func TestGetAnnuallyTimestamps(t *testing.T) {
 	}
 
 	for _, e := range testCases {
-		ip1, _ := parseStringToTime(e.layout, e.invocation_p1)
-		ip2, _ := parseStringToTime(e.layout, e.invocation_p2)
+		ip1, _ := parseStringToTime(e.invocation_p1)
+		ip2, _ := parseStringToTime(e.invocation_p2)
 
 		result := getAnnuallyTimestamps(ip1, ip2, e.frequency)
 
@@ -243,8 +236,8 @@ func TestGetTimestamps(t *testing.T) {
 	}
 
 	for _, e := range testCases {
-		ip1, _ := parseStringToTime(e.layout, e.invocation_p1)
-		ip2, _ := parseStringToTime(e.layout, e.invocation_p2)
+		ip1, _ := parseStringToTime(e.invocation_p1)
+		ip2, _ := parseStringToTime(e.invocation_p2)
 
 		result, err := getTimestamps(ip1, ip2, e.period)
 		if err != nil {
