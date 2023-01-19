@@ -19,17 +19,17 @@ func isValidPeriod(p string) bool {
 }
 
 // parseTimezone checks whether the timezone is valid.
-func parseTimezone(tz string) (string, *ApplicationError) {
+func parseTimezone(tz string) (*time.Location, *ApplicationError) {
 	timeZone, err := time.LoadLocation(tz)
 	if err != nil {
-		return "", &ApplicationError{
+		return nil, &ApplicationError{
 			Message:    "could not parse timezone",
 			StatusCode: http.StatusBadRequest,
 			Code:       "bad_request",
 		}
 	}
 
-	return timeZone.String(), nil
+	return timeZone, nil
 }
 
 // CheckInvocationPoint checks if invocation points are in the correct format.
@@ -71,7 +71,7 @@ func parseStringToTime(invocationPoint string) (*time.Time, *ApplicationError) {
 const UTC_FORM = "20060102T150405Z"
 
 // parseInvocationPoints checks invocation points and calculates the timestamps, if any.
-func parseInvocationPoints(t1, t2 string, period string) ([]string, *ApplicationError) {
+func parseInvocationPoints(t1, t2, tz string, period string) ([]string, *ApplicationError) {
 
 	if checkInvocationPoints(t1, t2) && checkInvocationSequence(t1, t2, UTC_FORM) {
 		ip1, err := parseStringToTime(t1)
@@ -83,7 +83,17 @@ func parseInvocationPoints(t1, t2 string, period string) ([]string, *Application
 		if err != nil {
 			return nil, err
 		}
-		return getTimestamps(ip1, ip2, period)
+
+		loc, appErr := parseTimezone(tz)
+		if appErr != nil {
+			return nil, &ApplicationError{
+				Message:    "cannot parse timezone",
+				StatusCode: http.StatusBadRequest,
+				Code:       "bad_request",
+			}
+		}
+
+		return getTimestamps(ip1, ip2, loc, period)
 	} else {
 		return nil, &ApplicationError{
 			Message:    "cannot parse invocation points",
@@ -93,7 +103,7 @@ func parseInvocationPoints(t1, t2 string, period string) ([]string, *Application
 	}
 }
 
-func getTimestamps(ip1, ip2 *time.Time, period string) ([]string, *ApplicationError) {
+func getTimestamps(ip1, ip2 *time.Time, loc *time.Location, period string) ([]string, *ApplicationError) {
 
 	n, err := strconv.Atoi(string(period[0]))
 	if err != nil {
@@ -108,7 +118,7 @@ func getTimestamps(ip1, ip2 *time.Time, period string) ([]string, *ApplicationEr
 	case "h":
 		return getHourlyTimestamps(ip1, ip2, n), nil
 	case "d":
-		return getDailyTimestamps(ip1, ip2, n), nil
+		return getDailyTimestamps(ip1, ip2, loc, n), nil
 	case "mo":
 		return getMonthlyTimestamps(ip1, ip2, n), nil
 	case "y":
@@ -142,11 +152,16 @@ func getMonthlyTimestamps(ip1, ip2 *time.Time, n int) []string {
 	return timestamps
 }
 
-func getDailyTimestamps(ip1, ip2 *time.Time, n int) []string {
+func getDailyTimestamps(ip1, ip2 *time.Time, loc *time.Location, n int) []string {
 	timestamps := []string{}
-	timestamp := ip1.Round(time.Hour)
+
+	// Calculate the offset of the local zone. Offset is the actual difference between
+	// UTC and Local time.
+	_, offset := ip1.Local().Zone()
+
+	timestamp := ip1.Truncate(time.Duration(offset) * time.Second)
 	for timestamp.Before(*ip2) {
-		timestamps = append(timestamps, timestamp.Format(UTC_FORM))
+		timestamps = append(timestamps, timestamp.Local().In(loc).Format(UTC_FORM))
 		timestamp = timestamp.AddDate(0, 0, n)
 	}
 	return timestamps

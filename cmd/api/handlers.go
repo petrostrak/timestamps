@@ -27,13 +27,7 @@ func getAllTimestamps(w http.ResponseWriter, r *http.Request) {
 	timezone := queryParams.Get("tz")
 	t1, t2 := queryParams.Get("t1"), queryParams.Get("t2")
 
-	tz, err := parseTimezone(timezone)
-	if err != nil {
-		RespondError(w, err)
-		return
-	}
-
-	invocationPoints, err := parseInvocationPoints(t1, t2, period)
+	invocationPoints, err := parseInvocationPoints(t1, t2, timezone, period)
 	if err != nil {
 		RespondError(w, err)
 		return
@@ -41,7 +35,7 @@ func getAllTimestamps(w http.ResponseWriter, r *http.Request) {
 
 	pd := &PeriodicTask{
 		Period:   period,
-		Timezone: tz,
+		Timezone: timezone,
 		InvocationPoints: InvocationPoints{
 			T1: t1,
 			T2: t2,
